@@ -1,35 +1,68 @@
-// Two Sum Zero:-
 
-var cl = console.log;
+// console.log(results.length);
 
-nums = [-5, -4, -2, -1, 0, 1, 4, 6, 7]
+const API_URL = 'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=3fd2be6f0c70a2a598f084ddfb75487c&page=3'
+const IMG_PATH = 'https://image.tmdb.org/t/p/w1280'
 
-const twosumzero = (arr) => {
-    for(let i = 0; i < arr.length; i++){
-        for(let j = i+1; j < arr.length; j++){
-            if(arr[i] + arr[j] === 0){
-                return [arr[i], arr[j]]
-            }
-        }
+let moviePoster = document.getElementById("moviePoster");
+let seacrhInput = document.getElementById("search");
+
+//  functions 
+// main html body
+function htmlBody(arr){
+    let final = '';
+    arr.forEach(ele => {
+        final += `<div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <figure class="posters">
+                                <img src= "${IMG_PATH}${ele.poster_path}" class="img-fluid" alt="${ele.title}">
+                                <figcaption>
+                                    <p class="title">${ele.title}</p>
+                                </figcaption>
+                                <span class="${colors(ele.vote_average)}">${ele.vote_average}</span>
+                                <div class="overview text-center">
+                                    <h4>Overview</h4>
+                                    <p class="">${ele.overview}</p>
+                                </div>
+                            </figure>
+                        </div>
+                    </div>
+                </div>`
+    });
+    
+    moviePoster.innerHTML = final;
+}
+htmlBody(results);
+
+//  callback function for 'keyUp' event
+function onEnter(e){
+    if(e.key === "Enter"){
+        // console.log("event triggered.");
+        let name = e.target.value.toLowerCase().trim();
+        // console.log(name);
+        let tempResult = results.filter(movie => movie.title.toLowerCase().trim().includes(name));
+        htmlBody(tempResult);
+    }else{
+        htmlBody(results);
     }
 }
-cl(twosumzero(nums));
 
 
-function twosumzero2(arr){
-    let startindex = 0;
-    let endindex = arr.length - 1;
-    let add;
+// to give color range for ratings
 
-    while(startindex < endindex){
-        add = arr[startindex] + arr[endindex];
-    if(add === 0){
-        return [arr[startindex], arr[endindex]];
-    } else if(add > 0){
-        endindex--
-    } else if(add < 0){
-        startindex ++
-    }
+function colors(rating){
+    if(rating >= 8){
+        return "green"
+    }else if(rating >= 6){
+        return "yellow"
+    }else if( rating >= 4){
+        return "orange"
+    }else{
+        return "red"
     }
 }
-cl(twosumzero2(nums));
+
+//  events
+
+seacrhInput.addEventListener("keyup", onEnter);
